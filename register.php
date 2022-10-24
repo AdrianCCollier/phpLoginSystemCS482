@@ -1,57 +1,63 @@
-<?php
-require_once "connection.php"; // linking
+<?php # opening php tag 
 
-// beginning of register logic
+# linking
+require_once "connection.php";
+
+# be able to populate superglobal $_SESSION with data
 session_start();
 
-// if superglobal $_session detects a user already has an account, redirect them b//back to welcome.php
+# If user is already logged in, redirect them to welcome.php
+# beginning of register logic
 if(isset($_SESSION['user'])) {
 	header("Location: welcome.php");
-
 } // end if 
 
-// if the register button is present in the request, start register logic
+# if a user clicks on the register button, request input
 if(isset($_REQUEST['register_btn'])) {
 
-	// test to see whether information is being received, echo preformatted text, print recursive array
+	# delete later, debugging, print what is being sent
 	echo "<pre>";
-	print_r($_REQUEST);
+	    print_r($_REQUEST);
 	echo "</pre>";
 
-	// accept user input with enhanced built in security functions 
 
-	// enforce variable to be a string only, no mysql queries or links 
+	# store user input into our account variables
+
+	# enforce name to be string only, no sql queries or links
 	$name = filter_var($_REQUEST['name'], FILTER_SANITIZE_STRING);
-	// enforce variable to be in proper email format  
+
+	# enforce email to be in proper format
 	$email = filter_var($_REQUEST['email'], FILTER_SANITIZE_EMAIL);
-	// enforce variable to not tags or links
-	$password = strip_tags($_REQUEST['password']);
 
+	# enforce password to not have html tags 
+	$password = $_REQUEST['password'];
 
-	// enforce proper register credentials, display errors with associative array 
-
-	// don't allow empty name input
+	# enforce name field to not be empty
 	if(empty($name)) {
 		$errorMsg[0][] = 'Name required';
 	}
 
-// 	// don't allow empty email input
-// 	if(empty($email)) {
-// 		$errorMsg[1][] = 'E-mail required';
-// 	}
+	# enforce email to not be empty
+	if(empty($email)) {
+		$errorMsg[1][] = 'Email required';
+	}
 
-// 	// don't allow empty password input
-// 	if(empty($password)) {
-// 		$errorMsg[2][] = 'Password required';
-// 	}
+	# enforce password to not be empty
+	if(empty($password)) {
+		$errorMsg[2][] = 'Password required';
+	}
 
-// 	// check password for proper length
-// 	if(strlen($password) < 6) {
-// 		$error[2][] = 'Must be at least 6 characters';
+	# enforce proper password length
+	if(strlen($password) < 6) {
+		$errorMsg[2][] = 'Password must be at least 6 characters';
+	}
 
-// } // end if 
+} // end if
 
-?>
+
+
+?> 
+
 <html lang="en">
 
 <head>
@@ -67,19 +73,6 @@ if(isset($_REQUEST['register_btn'])) {
 		
 		<form action="register.php" method="post">
 			<div class="mb-3">
-			
-			<!--Check to see if error message exists, output message------>	
-			
-			<?php
-			// left to debug, error message not showing 
-				if(isset($errorMsg[0 ])) {
-					foreach($errorMsg[0] as $emailErrors) {
-						echo "<p class='small text-danger'>".$emailErrors."</p>";
-					} // end for each 
-				} // end if 
-			
-			?>
-
 				<label for="name" class="form-label">Name</label>
 				<input type="text" name="name" class="form-control" placeholder="Jane Doe">
 			</div>
